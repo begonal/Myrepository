@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="util.js"></script>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: rgb(225, 225, 225);
+            margin: 0;
+            /* item居中 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #div-display {
+            width: 99%;
+            height: 98%;
+            display: grid;
+            /* 先分成两块区域，一份在左边占2份，一份在右边占3份 */
+            grid-template-columns: 2fr 3fr;
+            grid-template-rows: 100%;
+            gap: 2em;
+        }
+        /* 左边的员工信息 */
+        #div-person {
+            display: flex; 
+            flex-direction: column;
+        }
+        /* 员工信息 */
+        #div-person-info {
+            height: 100%;
+            background-color: white;
+            margin-top: 15px;
+            /* 添加滚动条，注意，里面有且只有一个item才能生效 */
+            overflow: auto;
+            padding: 5px;
+        }
+        #div-person-info-main {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.1em;
+            background-color: rgb(225, 225, 225);
+        }
+        /* 员工信息每个item的样式 */
+        #div-person-info-main > div {
+            background-color: white;
+            /* 每个item的高度 */
+            line-height: 4em;
+            display: grid;
+            grid-template-columns: auto auto 1fr;
+            gap: 1em;
+            align-items: center;
+        }
+        /* 员工信息中图片的样式 */
+        .div-person-image {
+            display: flex;
+            align-items: center;
+        }
+        /* 右边的生产线信息 */
+        #div-scx {
+            display: grid;
+            /* 一个标题占1em 剩下的平分 */
+            grid-template-rows: 1em 1fr 1fr 1fr 1fr;
+            gap: 3em;
+            margin-right: 20px;
+        }
+        /* 头部 */
+        #div-scx-head {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            text-align: center;
+        }
+        /* 生产线每个item的样式 */
+        .div-scx-item {
+            display: grid;
+            /* ，因为有一个标题，所以它占3em，剩下的占全部 */
+            grid-template-rows: 3em 1fr;
+            gap: 1em;
+        }
+
+        /* 每个生产线的标题的样式 */
+        .div-scx-item-head {
+            font-weight: 600;
+            text-align: center;
+            font-size: 2em;
+        }
+        /* 安排中主要的布局 */
+        .div-scx-item-anpai {
+            display: grid;
+            /* 把这个区域分为每行9个，共3行 */
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: 1fr 1fr 1fr;
+        }
+        /* 这是那个生产线的那个下面的图片 */
+        .div-scx-item-image {
+            /* row_start/col_start/row_end/col_end grid拆成的分数，占从第2行开始
+                到第3行结束，第1列开始到第10列结束
+             */
+            grid-area: 2/1/3/10;
+            /* content: ""; */
+            background-image: url("images/hei.png");
+            background-size: contain;
+        }
+        /* 以下四个css样式就是4个环节占的位置的样式 */
+        .div-scx-item-1 {
+            /* 
+                假如说分成（三行九列）
+                1 2 3 4 5 6 7 8 9
+                1 2 3 4 5 6 7 8 9
+                1 2 3 4 5 6 7 8 9
+                那么它占的就是 2 所在的区域（也就是行是从1开始到4结束，列是从2开始到3结束）
+             */
+            grid-area: 1/2/4/3;
+            background-color: white;
+        }
+        .div-scx-item-2 {
+            /* 同上面所说 */
+            grid-area: 1/4/4/5;
+            background-color: white;
+        }
+        .div-scx-item-3 {
+            grid-area: 1/6/4/7;
+            background-color: white;
+        }
+        .div-scx-item-4 {
+            grid-area: 1/8/4/9;
+            background-color: white;
+        }
+        /* 每个环节的样式 */
+        .div-scx-item-style {
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            /*  */
+            justify-content: space-around;
+            align-items: center;
+        }
+        /* 姓名 */
+        .div-name {
+            font-weight: 600;
+            font-size: 1.3em;
+        }
+        /* 体力 */
+        .div-scx-item-tili {
+            width: 100%;
+            text-align: center;
+            /* background-color: rgb(225, 225, 225); */
+            display: grid;
+            grid-template-areas: "a";
+        }
+        /* 里面有两个item 然后让他们占据的位置是一块区域 */
+        .div-scx-item-tili > div {
+            grid-area: a;
+        }
+        /* 设置那个百分比的填充颜色 */
+        .div-scx-item-tili-bg{
+            background-color: rgb(225, 225, 225);
+        }
+        /* 发光 */
+        .faguang {
+            box-shadow: 0 0 10px #f00;
+        }
+    </style>
+</head>
+<body>
+    <div id="div-display">
+        <div id="div-person">
+            <div id="div-person-head" style="text-align: center;">员工信息</div>
+            <div id="div-person-info">
+                <div id="div-person-info-main"></div>
+            </div>
+        </div>
+        <div id="div-scx">
+            <div id="div-scx-head">
+                <div style="grid-area: 1/2/2/3;">工程师</div>
+                <div style="grid-area: 1/4/2/5;">工人</div>
+                <div style="grid-area: 1/6/2/7;">技术人员</div>
+                <div style="grid-area: 1/8/2/9;">质检员</div>
+            </div> 
+            <div class="div-scx-item">
+                <div class="div-scx-item-head">1号生产线岗位安排</div>
+                <div class="div-scx-item-anpai">
+                    <div class="div-scx-item-image"></div>
+                    <div class="div-scx-item-1 div-scx-item-style">
+                        <div class="div-name">姓名00</div>
+                        <div>体力</div>
+                        <div class="div-scx-item-tili">
+                            <div class="div-scx-item-tili-bg"></div>    
+                            <div>100</div>
+                        </div>
+                    </div>
+                    <div class="div-scx-item-2 div-scx-item-style faguang">
+                        
+                    </div>
+                    <div class="div-scx-item-3 div-scx-item-style">
+                        <div class="div-name">姓名02</div>
+                        <div>体力</div>
+                        <div class="div-scx-item-tili">
+                            <div class="div-scx-item-tili-bg" style="width: 50%;"></div>    
+                            <div>50</div>
+                        </div>
+                    </div>
+                    <div class="div-scx-item-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    $(()=> {
+        var arr = ["工程师", "工人", "技术人员", "质检员"]
+        // 添加员工
+        for (let i = 1; i < 100; ++i) {
+            $("#div-person-info-main").append(`
+                <div>
+                    <div class="div-person-image"><img src="images/person.png"></div>
+                    <div style="font-weight: 600;">姓名${i >= 10 ? i : "0" + i}</div>
+                    <div>${arr[Math.floor(Math.random() * 10) % 4]}</div>
+                </div>
+            `)
+        }
+        // 4个生产线，添加4条数据
+        for (let i = 2; i <= 4; ++i) {
+            $("#div-scx").append(`
+                <div class="div-scx-item">
+                    <div class="div-scx-item-head">${i}号生产线岗位安排</div>
+                    <div class="div-scx-item-anpai">
+                        <div class="div-scx-item-image"></div>
+                        <div class="div-scx-item-1"></div>
+                        <div class="div-scx-item-2"></div>
+                        <div class="div-scx-item-3"></div>
+                        <div class="div-scx-item-4"></div>
+                    </div>
+                </div>
+            `)
+        }
+    })
+</script>

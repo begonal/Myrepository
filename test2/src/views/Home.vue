@@ -1,0 +1,77 @@
+<template>
+  <div>
+    1111111
+    <title>测试视频</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <div id="example"></div>
+  </div>
+</template>
+<script>
+
+export default {
+  data() {
+    return {};
+  },
+  mounted() {
+    this.init();
+  },
+  methods: {
+    init() {
+      var scene, renderer;
+      var container;
+      //renderer = new THREE.WebGLRenderer();
+      AVR.debug = true;
+      if (!AVR.Broswer.isIE() && AVR.Broswer.webglAvailable()) {
+        renderer = new THREE.WebGLRenderer();
+      } else {
+        renderer = new THREE.CanvasRenderer();
+      }
+      renderer.setPixelRatio(window.devicePixelRatio);
+      container = document.getElementById("example");
+      container.appendChild(renderer.domElement);
+
+      scene = new THREE.Scene();
+
+      var vr = new VR(scene, renderer, container, { fov: 50 });
+
+      //vr.playText="<img src='img/play90.png' width='40' height='40'/>";
+      vr.vrbox.radius = 600;
+      if (AVR.isCrossScreen()) {
+        vr.effect.separation = 1.2;
+      }
+      vr.loadProgressManager.onLoad = function () {};
+      //AVR.useGyroscope=false;
+      vr.init(function () {});
+
+      vr.playPanorama("http://ali.cdn.kaiyanapp.com/0207ed6d12f76ac67a67673cd8c2147a_2160x1080.mp4?auth_key=1599804117-0-0-bbce7208e53568fdf10c1c747f15f981", vr.resType.video);
+      vr.video.setAttribute("loop", "loop");
+      vr.video.crossOrigin = "*";
+
+      vr.video.onended = function () {};
+
+      window.addEventListener("resize", function () {
+        var isHuawei = navigator.userAgent.match(
+          /;\sHUAWEI\s[a-zA-Z0-9\-]+\sBuild\//
+       
+       );
+        if (AVR.OS.isWeixin() && !AVR.OS.isiOS() && isHuawei) {
+          if (vr.video.getAttribute("x5-video-orientation") == "landscape") {
+            vr.toolBar.toolbar.style.width = document.body.clientWidth + "px";
+          } else {
+            vr.toolBar.toolbar.style.width = "100%";
+          }
+        }
+      });
+    },
+  },
+};
+</script>
+<style scoped>
+#example {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+</style>

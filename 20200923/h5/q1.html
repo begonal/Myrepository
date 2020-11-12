@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="util.js"></script>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            background-color: rgb(225, 225, 225);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #div-display {
+            width: 99%;
+            height: 98%;
+            display: grid;
+            grid-template-rows: 4fr 6fr;
+            gap: 2em;
+        }
+        /* 头部的图片 */
+        #div-header {
+            background-image: url("images/line01_01.png");
+            background-size: 100% 100%;
+            background-color: white;
+        }
+        /* 主体部分 */
+        #div-body {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-areas: "a";
+        }
+        #div-main{
+            grid-area: a;
+            margin: 20px;
+            display: grid;
+            /* 分成 10行(5*(1 + 1)) 13列(1+ 5*(1 + 1) + 1 + 1)*/
+            grid-template-columns: 1fr repeat(5, 50px 1fr) 50px 1fr;
+            grid-template-rows: repeat(5, 1fr 50px);
+        }
+        /* 行 */
+        #row1 {
+            grid-area: 2/2/3/13;
+            background-color: rgb(151, 151, 151);
+            height: 33%;
+            align-self: center;
+        }
+        #row2 {
+            grid-area: 6/2/7/13;
+            background-color: rgb(151, 151, 151);
+            height: 33%;
+            align-self: center;
+        }
+        #row3 {
+            grid-area: 10/2/11/13;
+            background-color: rgb(151, 151, 151);
+            height: 33%;
+            align-self: center;
+        }
+        #col1 {
+            grid-area: 3/12/6/13;
+            display: flex;
+            justify-content: center;
+        }
+        /* 居中的列 */
+        .col-center {
+            width: 33%;
+            height: 100%;
+            background-color: rgb(151, 151, 151);
+        }
+        #col2 {
+            grid-area: 7/2/10/3;
+            display: flex;
+            justify-content: center;
+        }
+
+        .circle {
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        #car {
+            grid-area: 1/2/2/4;
+            display: flex;
+            /* justify-content: center; */
+                
+            /* background-color: white; */
+        }
+        #car > div {
+            width: 200px;
+            background-image: url("images/car.png");
+            background-size: 100% 100%;
+            transform:translateX(-50px);
+            transition: all 1s ease;
+            /* transition: 1s; */
+        }
+        .red {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="div-display">
+        <div id="div-header"></div>
+        <div id="div-body">
+            <div id="div-main">
+                <div id="row1"></div>
+                <div id="row2"></div>
+                <div id="row3"></div>
+
+                <div id="col1">
+                    <div class="col-center"></div>
+                </div>
+                <div id="col2">
+                    <div class="col-center"></div>
+                </div>
+                <div id="car">
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    var circleR = 50 // 圆的直径是50px
+    $(()=> {
+        // 画圆(行中的圆)
+        let ids = [0, 1, 2, 3, 4, 5, 12, 11, 10, 9, 8, 7, 14, 15, 16, 17, 18, 19]
+        let k = 0
+        for(let i = 2; i <= 11; i += 4)
+            for (let j = 2; j <= 13; j+=2) {
+                $('#div-main').append(`
+                    <div class="circle" style="grid-area: ${i}/${j}/${i+1}/${j+1};" id="postion${ids[k]}"></div>
+                `)
+                k++
+            }
+        // 画圆(列中的圆)
+        $('#div-main').append(`
+            <div class="circle" style="grid-area: 4/12/5/13;" id="postion6"></div>
+            <div class="circle" style="grid-area: 8/2/9/3;" id="postion13"></div>
+        `)
+
+        // 画车
+        // 车的行动路径
+        let carRow = $('#row1')
+        let carCol = $('#col1')
+        // 车的位移量
+        let runRow = (getFloat(carRow.css('width')) - circleR) / 5
+        let runCol = (getFloat(carCol.css('height')) + circleR) / 2
+        var carPath = [
+            [0, 0], [runRow, 0], [runRow, 0], [runRow, 0], [runRow, 0], [runRow, 0], 
+            [0, runCol],
+            [0, runCol], [-runRow, 0], [-runRow, 0], [-runRow, 0], [-runRow, 0], [-runRow, 0],
+            [0, runCol],
+            [0, runCol], [runRow, 0], [runRow, 0], [runRow, 0], [runRow, 0], [runRow, 0],
+        ]
+        
+        // 从什么位置开始到什么结束
+        run(carPath, 0, 19)
+    })
+    // 初始化车的位置
+    function initCar(carPath, postion) {
+        let x = 0, y = 0
+        for(let i = 0; i <= postion; ++i) {
+            x += carPath[i][0]
+            y += carPath[i][1]
+        }
+        $('#car > div').css('transform', `translate(${x - circleR}px, ${y}px)`)
+        return [x, y]
+    }
+    // 车的初始位置
+    // var carPostion = [
+    //     [1, 2, 2, 4], [1, 4, 2, 6], [1, 6, 2, 8], [1, 8, 2, 10], [1, 10, 2, 12], [1, 12, 2, 14],
+    //     [3, 12, 4, 14],
+    //     [5, 12, 6, 14], [5, 10, 6, 12], [5, 8, 6, 10], [5, 6, 6, 8], [5, 4, 6, 6], [5, 2, 6, 4], 
+    //     [7, 2, 8, 4],
+    //     [9, 2, 10, 4], [9, 4, 10, 6], [9, 6, 10, 8], [9, 8, 10, 10], [9, 10, 10, 12], [9, 12, 10, 14]
+    // ]
+    // 开始的位置和结束的位置
+    function run(carPath, start, end) {
+        // 设置车的初始位置
+        let xy = initCar(carPath, start)
+        $('.circle').removeClass('red')
+        $(`#postion${start}`).addClass("red")
+        let carImage = $('#car > div')
+        let sumX = xy[0], sumY = xy[1]
+        let j = 1;
+
+        for (let i = start + 1; i <= end; ++i) {
+            setTimeout(function(){
+                sumX += carPath[i][0]
+                sumY += carPath[i][1]
+                carImage.css('transform', `translate(${sumX - circleR}px, ${sumY}px)`)
+                setTimeout(() => {
+                    $('.circle').removeClass('red')
+                    $(`#postion${i}`).addClass("red") 
+                }, 500);
+                if (i == 7) {
+                    carImage.css('background-image', `url("images/carRe.png")`)
+                }
+                if (i == 14) {
+                    carImage.css('background-image', `url("images/car.png")`)
+                }
+                if (i == end) { // 结束之后继续
+                    setTimeout(() => {
+                        carImage.css('transform', `translate(${0}px, ${0}px)`)
+                        run(carPath, 0, 19)
+                    }, 1000);
+                   
+                }
+                console.log(j);
+            }, j*995);
+            j++
+        }
+    }
+    // 因为获得的宽度或高度是有单位的，所以要去除
+    function getFloat(str) {
+        let regex = /\d|\./g; // 匹配数字或小数点
+        let result = str.match(regex);
+        return parseFloat(result.join(''))
+    }
+</script>

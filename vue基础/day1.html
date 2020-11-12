@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hellow word!</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h4>{{mesege}}</h4>
+        <input type="button" value="浪起来">
+        <input type="button" value="低调">
+    </div>
+    <script type="text/javascript">
+        var app =  new Vue({
+            el:'#app',
+            data() {
+                return {
+                    mesege:"Hello This is HouMou First Project!"
+                }
+            },
+        })
+
+    </script>
+</body>
+</html>

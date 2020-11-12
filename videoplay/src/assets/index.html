@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BarrageVideo</title>
+    <link rel="stylesheet" href="./resources/iconfont/iconfont.css">
+    <link rel="stylesheet" href="./css/Animation.css">
+    <link rel="stylesheet" href="./css/BarrageVideo.css">
+    <link rel="stylesheet" href="./css/Loading.css">
+    <link rel="stylesheet" href="./css/FullScreen.css">
+</head>
+<body>
+    <div class="video-container" tabindex="0">
+        <!-- 播放器 -->
+        <video id="myVideo" preload="preload" src="../BarrageVideo-master/src/video/360demo.mp4">您的浏览器不支持 video 标签。</video>
+        <!-- 弹幕 -->
+        <div class="video-barrage">
+            <canvas id="barrageCanvas"></canvas>
+        </div>
+        <!-- 暂停海报 -->
+        <div class="video-poster">
+            <a class="close h5-video-close"></a>
+            <img class="img" src="./resources/images/ad.jpg" alt="">
+        </div>
+        <!-- 加载动画 -->
+        <div class="video-waitting hide">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+            <!-- <div class="loading">加载中...</div> -->
+        </div>
+        <!-- 提示信息 -->
+        <div class="message-bottom hide"></div>
+        <!-- 工具栏 -->
+        <div class="video-control">
+            <!-- 进度条 -->
+            <div class="process-container">
+                <div class="process-bar">
+                    <div class="cache-bar"></div>
+                    <div class="play-bar"></div>
+                </div>
+                <div class="process-info"></div>
+                <div class="adjust-tool"></div>
+            </div>
+            <!-- 工具栏 -->
+            <div class="control-container">
+                <div class="control-left">
+                    <!-- 播放/暂停 -->
+                    <div>
+                        <a class="play-tool h5-video-play"></a>
+                    </div>
+                    <!-- 重新加载 -->
+                    <div>
+                        <a class="reload-tool h5-video-refresh"></a>
+                    </div>
+                    <!-- 时间控件 -->
+                    <div class="time-container">
+                        <span class="time time-current">00:00</span>
+                        <span> / </span>
+                        <span class="time time-total">00:00</span>
+                    </div>
+                </div>
+                <div class="control-center">
+                    <!-- 发送弹幕 -->
+                    <div class="send-barrage-tool">
+                        <input type="text" class="send-barrage-value" placeholder="弹幕还是要发的，万一火了呢~"/>
+                        <div class="send-setting-tool">
+                            <div class="send-setting-content">
+                                <div class="send-fontsize">
+                                    <p>字体大小</p>
+                                    <ul>
+                                        <li>极小</li>|
+                                        <li>小</li>|
+                                        <li class="active">正常</li>|
+                                        <li>大</li>|
+                                        <li>极大</li>
+                                    </ul>
+                                </div>
+                                <div class="send-speed">
+                                    <p>移动速度</p>
+                                    <ul>
+                                        <li>慢速</li>|
+                                        <li class="active">正常</li>|
+                                        <li>快速</li>
+                                    </ul>
+                                </div>
+                                <div class="send-color">
+                                    <p>字体颜色</p>
+                                    <ul>
+                                        <li class="active" style="background-color:#D9E3F0"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#F47373"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#697689"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#37D67A"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#2CCCE4"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#555555"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#dce775"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#ff8a65"><a class="h5-video-selected"></a></li>
+                                        <li style="background-color:#ba68c8"><a class="h5-video-selected"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <a class="send-setting-btn h5-video-send-setting"></a>
+                        </div>
+                        <a class="send-barrage-btn">发送</a>
+                    </div>
+                </div>
+                <div class="control-right">
+                    <!-- 弹幕开关 -->
+                    <div class="barrage-setting-container">
+                        <div class="barrage-setting-content">
+                           <div>
+                               <div class="barrage-opacity">
+                                    <p>不透明度</p>
+                                    <ul>
+                                        <li>无</li>|
+                                        <li>低</li>|
+                                        <li>中</li>|
+                                        <li class="active">高</li>
+                                    </ul>
+                               </div>
+                               <div class="barrage-range">
+                                    <p>显示区域</p>
+                                    <ul>
+                                        <li class="active">
+                                            <a class="h5-video-barrage-all"></a>
+                                            <span>全屏</span>
+                                        </li>
+                                        <li>
+                                            <a class="h5-video-barrage-top"></a>
+                                            <span>顶部</span>
+                                        </li>
+                                        <li>
+                                            <a class="h5-video-barrage-bottom"></a>
+                                            <span>底部</span>
+                                        </li>
+                                    </ul>
+                               </div>
+                                <div class="barrage-switch">
+                                    <span>弹幕开关</span>
+                                    <div class="barrage-tool on">
+                                        <div class="handle"></div>
+                                    </div>
+                                </div>
+                           </div>
+                        </div>
+                        <a class="barrage-setting-tool h5-video-barrage-setting3"></a>
+                    </div>
+                    
+                    <!-- 倍数播放 -->
+                    <div class="rate-container">
+                        <div class="rate-content">
+                            <ul>
+                                <li>X .50</li>
+                                <li class="active">X 1.0</li>
+                                <li>X 1.5</li>
+                                <li>X 2.0</li>
+                            </ul>
+                        </div>
+                        <a class="rate-tool">倍数</a>
+                    </div>
+                    <!-- 音量控件 -->
+                    <div class="volume-container">
+                        <div class="volume-content">
+                            <div>
+                                <div class="volume-value">50%</div>
+                                <div class="volume-slider-bg">
+                                    <div class="volume-bg"></div>
+                                    <div class="volume-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="volume-tool h5-video-volume-on"></a>
+                    </div>
+                    <!-- 设置控件 -->
+                    <!-- <div>
+                        <div class="setting-content"></div>
+                        <a class="setting-tool h5-video-settings"></a>
+                    </div> -->
+                    <!-- 全屏/非全屏 -->
+                    <div>
+                        <a class="fullscreen-tool h5-video-fullscreen"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 顶部菜单 -->
+        <div class="video-top-menu hide">
+            <p class="video-title">快把我哥带走.国语中字</p>
+            <ul class="video-size">
+                <li>
+                    <a class="h5-video-barrage-all"></a>
+                    <span>50%</span>
+                </li>
+                <li>
+                    <a class="h5-video-barrage-all"></a>
+                    <span>75%</span>
+                </li>
+                <li class="active">
+                    <a class="h5-video-barrage-all"></a>
+                    <span>100%</span>
+                </li>
+                <li>
+                    <a class="h5-video-barrage-all"></a>
+                    <span>FillScreen</span>
+                </li>
+            </ul>
+            <span class="local-time">19:52</span>
+        </div>
+    </div>
+</body>
+<script src="./js/Util.js"></script>
+<script src="./resources/datas/barrages.js"></script>
+<script src="./js/BarrageVideo.js"></script>
+<script src="./js/BarrageUtil.js"></script>
+<script>
+    window.onload = () => {
+        let localTime = document.getElementsByClassName("local-time")[0];
+        localTime.innerHTML = Util.getLocalTime();
+        setInterval(() => {
+            localTime.innerHTML = Util.getLocalTime();
+        }, 1000 * 60)
+    }
+</script>
+</html>
